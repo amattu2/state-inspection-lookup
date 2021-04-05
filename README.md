@@ -1,14 +1,26 @@
 # Introduction
 N/A
 
+# States Supported
+|State|Online Access Point|
+|:-:|:-|
+|Maryland|https://egov.maryland.gov/msp/vsi/api/Lookup/Inspections?vehicleVin=|
+
 # Usage
-N/A
+TDB
+
+# To-Do Integrations
+A list of potential integrations with state systems. These require advanced parsing or endpoint manipulation to grab the information.
+|State|Online Access Point|
+|:-:|:-|
+|Delaware|https://dealers.dmv.de.gov/Dealer/VehicleInspection/citizeninspection|
+|California|https://www.bar.ca.gov/services/Vehicle/PubTstQry.aspx|
+|VA|https://www.virginiavip.org/PublicSite/Pages/VehicleLookup.aspx|
+|Georgia|https://www.cleanairforce.com/motorists/vir-reprints/|
 
 # Notes
-N/A
+https://haynes.com/en-us/tips-tutorials/what-know-about-vehicle-inspections-all-50-states
+
 
 # Requirements & Dependencies
-N/A
-
-# Previews
-![preview image](https://via.placeholder.com/350x240)
+PHP 7
