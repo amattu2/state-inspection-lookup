@@ -2,9 +2,9 @@
 N/A
 
 # States Supported
-|State|Online Access Point|
-|:-:|:-|
-|Maryland|https://egov.maryland.gov/msp/vsi/api/Lookup/Inspections?vehicleVin=|
+|State|Online Access Point|Notes|
+|:-:|:-|:-|
+|Maryland|https://egov.maryland.gov/msp/vsi/api/Lookup/Inspections?vehicleVin=|Pending further tests, but it appears that MD only keeps the e-inspection record until it expires (6 months)|
 
 # Usage
 TDB
