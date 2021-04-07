@@ -17,13 +17,13 @@ class InvalidVINLengthException extends \Exception {}
 /**
  * State Endpoint Wrapper Interface
  */
-interface StateInterface
+interface StateInspectionInterface
 {
   /**
    * A endpoint wrapper to return emissions and inspection results
    *
    * @param string VIN number
-   * @return array [description]
+   * @return array Array<Array<Emissions>, Array<Safety>>
    * @throws TypeError
    * @author Alec M. <https://amattu.com>
    * @date 2021-04-07T14:49:13-040
@@ -33,9 +33,9 @@ interface StateInterface
   /**
    * A endpoint wrapper to return a structured state emissions test result
    * All return attributes are nullable, given that each state returns different information.
-   * 
+   *
    * @param string VIN number
-   * @return array [description]
+   * @return array Array<Array<?string type, ?string date, ?bool result>, ...>
    * @throws TypeError
    * @throws UnsupportedStateOperationException
    * @author Alec M. <https://amattu.com>
@@ -48,7 +48,7 @@ interface StateInterface
    * All return attributes are nullable, given that each state returns different information.
    *
    * @param string VIN number
-   * @return array Array<Array<?bool pass, ?string url>>
+   * @return array Array<Array<?bool result, ?string url>, ...>
    * @return array Structured return result
    * @throws TypeError
    * @throws UnsupportedStateOperationException
@@ -164,18 +164,18 @@ class InspectionHelper
 /**
  * Maryland State Inspection Wrapper
  *
- * @implements StateInterface
+ * @implements StateInspectionInterface
  */
-class MD implements StateInterface
+class MD implements StateInspectionInterface
 {
   // Class Variables
   private $endpoints = Array(
     "emissions" => "http://mva.mdveip.com/",
-    "inspection" => "https://egov.maryland.gov/msp/vsi/api/Lookup/Inspections?vehicleVin=%s",
+    "safety" => "https://egov.maryland.gov/msp/vsi/api/Lookup/Inspections?vehicleVin=%s",
   );
 
   /**
-   * @see StateInterface::fetch_records
+   * @see StateInspectionInterface::fetch_safety
    */
   public function fetch_safety(string $VIN) : array
   {
