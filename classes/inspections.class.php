@@ -170,7 +170,7 @@ class InspectionHelper
    * @author Alec M. <https://amattu.com>
    * @date 2021-03-31T11:11:18-040
    */
-  private function http_post(string $endpoint, array $fields) : ?string
+  public static function http_post(string $endpoint, array $fields) : ?string
   {
     // cURL Initialization
     $handle = curl_init();
