@@ -11,6 +11,7 @@ namespace amattu;
 
 // Exception Classes
 class UnsupportedStateException extends \Exception {}
+class UnsupportedOperationException extends \Exception {}
 class InvalidVINLengthException extends \Exception {}
 
 /**
@@ -19,17 +20,41 @@ class InvalidVINLengthException extends \Exception {}
 interface StateInterface
 {
   /**
-   * A endpoint wrapper to return a structured state inspection search result
+   * A endpoint wrapper to return emissions and inspection results
+   *
+   * @param string VIN number
+   * @return array [description]
+   * @throws TypeError
+   * @author Alec M. <https://amattu.com>
+   * @date 2021-04-07T14:49:13-040
+   */
+  public function all_records(string $VIN) : array;
+
+  /**
+   * A endpoint wrapper to return a structured state emissions test result
+   *
+   * @param string VIN number
+   * @return array [description]
+   * @throws TypeError
+   * @throws UnsupportedOperationException
+   * @author Alec M. <https://amattu.com>
+   * @date 2021-04-07T14:51:13-040
+   */
+  public function fetch_emissions(string $VIN) : array;
+
+  /**
+   * A endpoint wrapper to return a structured state safety inspection search result
    * All return attributes are nullable, given that each state returns different information.
    *
-   * @param string $VIN vin number
+   * @param string VIN number
    * @return array Array<Array<?bool pass, ?string url>>
    * @return array Structured return result
    * @throws TypeError
+   * @throws UnsupportedOperationException
    * @author Alec M. <https://amattu.com>
    * @date 2021-04-07T11:05:27-040
    */
-  public function fetch_records(string $VIN) : array;
+  public function fetch_inspection(string $VIN) : array;
 }
 
 /**
@@ -83,6 +108,16 @@ class Inspections {
     // Fetch Records
     return self::$states[$state]->fetch_records($VIN);
   }
+
+  public static function inspections() : array
+  {
+
+  }
+
+  public static function emissions() : array
+  {
+    
+  }
 }
 
 /**
@@ -133,7 +168,10 @@ class InspectionHelper
 class MD implements StateInterface
 {
   // Class Variables
-  private $endpoint = "https://egov.maryland.gov/msp/vsi/api/Lookup/Inspections?vehicleVin=%s";
+  private $endpoints = Array(
+    "emissions" => "http://mva.mdveip.com/",
+    "inspection" => "https://egov.maryland.gov/msp/vsi/api/Lookup/Inspections?vehicleVin=%s",
+  );
 
   /**
    * @see StateInterface::fetch_records
