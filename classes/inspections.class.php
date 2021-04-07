@@ -20,9 +20,10 @@ interface StateInterface
 {
   /**
    * A endpoint wrapper to return a structured state inspection search result
+   * All return attributes are nullable, given that each state returns different information.
    *
-   * @param string $VIN
-   * @return array Array<Array<string pass, ?string url>>
+   * @param string $VIN vin number
+   * @return array Array<Array<?bool pass, ?string url>>
    * @return array Structured return result
    * @throws TypeError
    * @author Alec M. <https://amattu.com>
@@ -46,7 +47,7 @@ class Inspections {
    * @author Alec M. <https://amattu.com>
    * @date 2021-04-07T11:11:14-040
    */
-  public function setup_states()
+  private function setup_states()
   {
     self::$states = Array(
       "MD" => new MD(),
@@ -121,6 +122,37 @@ class InspectionHelper
     // Return
     curl_close($handle);
     return $result && !$error ? $result : null;
+  }
+}
+
+/**
+ * Maryland State Inspection Wrapper
+ *
+ * @implements StateInterface
+ */
+class MD implements StateInterface
+{
+  // Class Variables
+  private $endpoint = "https://egov.maryland.gov/msp/vsi/api/Lookup/Inspections?vehicleVin=%s";
+
+  /**
+   * @see StateInterface::fetch_records
+   */
+  public function fetch_records(string $VIN) : array
+  {
+    // Variables
+    $endpoint = sprintf($this->endpoint, $VIN);
+
+    // Fetch Records
+    $records = json_decode(InspectionHelper::http_get($endpoint), true) ?: [];
+    $parsed_records = Array();
+
+    /**
+     * tbd
+     */
+
+    // Return
+    return $parsed_records;
   }
 }
 ?>
