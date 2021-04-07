@@ -180,7 +180,7 @@ class MD implements StateInspectionInterface
   public function fetch_safety(string $VIN) : array
   {
     // Fetch Records
-    $endpoint = sprintf($this->endpoint, $VIN);
+    $endpoint = sprintf($this->endpoints["safety"], $VIN);
     $records = json_decode(InspectionHelper::http_get($endpoint), true) ?: [];
     $parsed_records = Array();
 
