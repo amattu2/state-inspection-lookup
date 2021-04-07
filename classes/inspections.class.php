@@ -36,19 +36,19 @@ interface StateInterface
  */
 class Inspections {
   // Class Variables
-  private $states = null;
-  private $vin_length = 17;
+  private static $states = null;
+  private static $vin_length = 17;
 
   /**
-   * Class Constructor
+   * Class State Initialization
    *
    * @throws None
    * @author Alec M. <https://amattu.com>
    * @date 2021-04-07T11:11:14-040
    */
-  public function __construct()
+  public function setup_states()
   {
-    $this->states = Array(
+    self::$states = Array(
       "MD" => new MD(),
     );
   }
@@ -66,18 +66,21 @@ class Inspections {
    * @date 2021-04-07T11:15:26-040
    * @see StateInterface::fetch_records
    */
-  public function records(string $VIN, string $state) : array
+  public static function records(string $VIN, string $state) : array
   {
     // Checks
-    if (!array_key_exists($state, $this->states)) {
+    if (!self::$states) {
+      self::setup_states();
+    }
+    if (!array_key_exists($state, self::$states)) {
       throw new UnsupportedStateException("The provided state is not currently supported");
     }
-    if (strlen($VIN) !== $this->vin_length) {
+    if (strlen($VIN) !== self::$vin_length) {
       throw new InvalidVINLengthException("The provided VIN is not a valid length");
     }
 
     // Fetch Records
-    return $this->states[$state]->fetch_records($VIN);
+    return self::$states[$state]->fetch_records($VIN);
   }
 }
 
@@ -120,6 +123,4 @@ class InspectionHelper
     return $result && !$error ? $result : null;
   }
 }
-
-
 ?>
