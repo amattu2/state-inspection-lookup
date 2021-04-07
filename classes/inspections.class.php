@@ -159,6 +159,45 @@ class InspectionHelper
     curl_close($handle);
     return $result && !$error ? $result : null;
   }
+
+  /**
+   * Perform HTTP Post Request
+   *
+   * @param string url
+   * @param array post params
+   * @return ?string result body
+   * @throws TypeError
+   * @author Alec M. <https://amattu.com>
+   * @date 2021-03-31T11:11:18-040
+   */
+  private function http_post(string $endpoint, array $fields) : ?string
+  {
+    // cURL Initialization
+    $handle = curl_init();
+    $field_string = "";
+    $result = "";
+    $error = 0;
+    foreach($fields as $k => $v) { $field_string .= $k ."=". $v . "&"; }
+    rtrim($field_string, "&");
+
+    // Options
+    curl_setopt($handle, CURLOPT_URL, $endpoint);
+    curl_setopt($handle, CURLOPT_POST, count($fields));
+    curl_setopt($handle, CURLOPT_POSTFIELDS, $field_string);
+    curl_setopt($handle, CURLOPT_FAILONERROR, 1);
+    curl_setopt($handle, CURLOPT_FOLLOWLOCATION, 1);
+    curl_setopt($handle, CURLOPT_MAXREDIRS, 2);
+    curl_setopt($handle, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($handle, CURLOPT_TIMEOUT, 10);
+
+    // Fetch Result
+    $result = curl_exec($handle);
+    $error = curl_errno($handle);
+
+    // Return
+    curl_close($handle);
+    return $result && !$error ? $result : "";
+  }
 }
 
 /**
