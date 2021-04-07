@@ -11,7 +11,7 @@ namespace amattu;
 
 // Exception Classes
 class UnsupportedStateException extends \Exception {}
-class UnsupportedOperationException extends \Exception {}
+class UnsupportedStateOperationException extends \Exception {}
 class InvalidVINLengthException extends \Exception {}
 
 /**
@@ -28,15 +28,16 @@ interface StateInterface
    * @author Alec M. <https://amattu.com>
    * @date 2021-04-07T14:49:13-040
    */
-  public function all_records(string $VIN) : array;
+  public function fetch_all(string $VIN) : array;
 
   /**
    * A endpoint wrapper to return a structured state emissions test result
-   *
+   * All return attributes are nullable, given that each state returns different information.
+   * 
    * @param string VIN number
    * @return array [description]
    * @throws TypeError
-   * @throws UnsupportedOperationException
+   * @throws UnsupportedStateOperationException
    * @author Alec M. <https://amattu.com>
    * @date 2021-04-07T14:51:13-040
    */
@@ -50,11 +51,11 @@ interface StateInterface
    * @return array Array<Array<?bool pass, ?string url>>
    * @return array Structured return result
    * @throws TypeError
-   * @throws UnsupportedOperationException
+   * @throws UnsupportedStateOperationException
    * @author Alec M. <https://amattu.com>
    * @date 2021-04-07T11:05:27-040
    */
-  public function fetch_inspection(string $VIN) : array;
+  public function fetch_safety(string $VIN) : array;
 }
 
 /**
@@ -92,7 +93,7 @@ class Inspections {
    * @date 2021-04-07T11:15:26-040
    * @see StateInterface::fetch_records
    */
-  public static function records(string $VIN, string $state) : array
+  public static function all(string $VIN, string $state) : array
   {
     // Checks
     if (!self::$states) {
@@ -109,14 +110,14 @@ class Inspections {
     return self::$states[$state]->fetch_records($VIN);
   }
 
-  public static function inspections() : array
+  public static function safety() : array
   {
 
   }
 
   public static function emissions() : array
   {
-    
+
   }
 }
 
@@ -176,7 +177,7 @@ class MD implements StateInterface
   /**
    * @see StateInterface::fetch_records
    */
-  public function fetch_records(string $VIN) : array
+  public function fetch_safety(string $VIN) : array
   {
     // Variables
     $endpoint = sprintf($this->endpoint, $VIN);
