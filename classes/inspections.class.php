@@ -48,7 +48,7 @@ interface StateInspectionInterface
    * All return attributes are nullable, given that each state returns different information.
    *
    * @param string VIN number
-   * @return array Array<Array<?bool result, ?string url>, ...>
+   * @return array Array<Array<?bool result, ?string date, ?string url>, ...>
    * @return array Structured return result
    * @throws TypeError
    * @throws UnsupportedStateOperationException
@@ -179,16 +179,19 @@ class MD implements StateInspectionInterface
    */
   public function fetch_safety(string $VIN) : array
   {
-    // Variables
-    $endpoint = sprintf($this->endpoint, $VIN);
-
     // Fetch Records
+    $endpoint = sprintf($this->endpoint, $VIN);
     $records = json_decode(InspectionHelper::http_get($endpoint), true) ?: [];
     $parsed_records = Array();
 
-    /**
-     * tbd
-     */
+    // Parse Results
+    foreach ($records as $record) {
+      $parsed_records[] = Array(
+        "date" => $record["date"], /* TBD: Parse proprietary format */
+        "result" => $record["result"],
+        "link" => null
+      );
+    }
 
     // Return
     return $parsed_records;
