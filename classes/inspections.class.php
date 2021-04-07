@@ -81,17 +81,16 @@ class Inspections {
   }
 
   /**
-   * Fetch Inspection Records
+   * Fetch All State Inspection Records
    *
-   * @param string VIN
+   * @param string VIN number
    * @param string U.S. state
-   * @return array
+   * @return array <See StateInspectionInterface>
    * @throws TypeError
    * @throws UnsupportedStateException
    * @throws InvalidVINLengthException
    * @author Alec M. <https://amattu.com>
    * @date 2021-04-07T11:15:26-040
-   * @see StateInterface::fetch_records
    */
   public static function all(string $VIN, string $state) : array
   {
@@ -110,14 +109,62 @@ class Inspections {
     return self::$states[$state]->fetch_records($VIN);
   }
 
-  public static function safety() : array
+  /**
+   * Fetch State Safety Inspection Records
+   *
+   * @param string VIN number
+   * @param string U.S. state
+   * @return array <See StateInspectionInterface>
+   * @throws TypeError
+   * @throws UnsupportedStateException
+   * @throws InvalidVINLengthException
+   * @author Alec M. <https://amattu.com>
+   * @date 2021-04-07T17:20:43-040
+   */
+  public static function safety(string $VIN, string $state) : array
   {
+    // Checks
+    if (!self::$states) {
+      self::setup_states();
+    }
+    if (!array_key_exists($state, self::$states)) {
+      throw new UnsupportedStateException("The provided state is not currently supported");
+    }
+    if (strlen($VIN) !== self::$vin_length) {
+      throw new InvalidVINLengthException("The provided VIN is not a valid length");
+    }
 
+    // Fetch Records
+    return self::$states[$state]->fetch_safety($VIN);
   }
 
-  public static function emissions() : array
+  /**
+   * Fetch Emissions Records
+   *
+   * @param string VIN number
+   * @param string U.S. state
+   * @return array <See StateInspectionInterface>
+   * @throws TypeError
+   * @throws UnsupportedStateException
+   * @throws InvalidVINLengthException
+   * @author Alec M. <https://amattu.com>
+   * @date 2021-04-07T17:19:39-040
+   */
+  public static function emissions(string $VIN, string $state) : array
   {
+    // Checks
+    if (!self::$states) {
+      self::setup_states();
+    }
+    if (!array_key_exists($state, self::$states)) {
+      throw new UnsupportedStateException("The provided state is not currently supported");
+    }
+    if (strlen($VIN) !== self::$vin_length) {
+      throw new InvalidVINLengthException("The provided VIN is not a valid length");
+    }
 
+    // Fetch Records
+    return self::$states[$state]->fetch_emissions($VIN);
   }
 }
 
