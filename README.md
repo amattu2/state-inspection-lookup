@@ -1,5 +1,5 @@
 # Introduction
-This is a basic library/wrapper for digital vehicle state inspection lookups. If you need to check the last date(s) a vehicle was state inspected, and you know the state, this library is for you. Originally designed for integration within a automotive service management SaaS application.
+This is a basic library/wrapper for digital vehicle state safety inspection record lookups. If you need to check the last date(s) a vehicle was state inspected, and you know the state, this library is for you. Originally designed for integration within a automotive service management SaaS application.
 
 # States Supported
 |State|Online Portal Point|Notes|
