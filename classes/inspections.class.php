@@ -261,6 +261,28 @@ class MD implements StateInspectionInterface
   );
 
   /**
+   * @see StateInspectionInterface::fetch_all
+   */
+  public function fetch_all(string $VIN) : array
+  {
+    // Variables
+    $result = Array("Safety" => null, "Emissions" => null);
+
+    // Fetch Safety Inspection
+    try {
+      $result["Safety"] = $this->fetch_safety($VIN);
+    } catch (\Exception $e) {}
+
+    // Fetch Emissions Inspection
+    try {
+      $result["Emissions"] = $this->fetch_emissions($VIN);
+    } catch (\Exception $e) {}
+
+    // Return
+    return $result;
+  }
+
+  /**
    * @see StateInspectionInterface::fetch_safety
    */
   public function fetch_safety(string $VIN) : array
