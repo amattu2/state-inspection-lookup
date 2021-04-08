@@ -78,7 +78,7 @@ class MD extends StateInspection implements StateInspectionInterface
         $parsed_records[0]["type"] = $value;
       } else if (strpos($value, "Test Date") != false) {
         $value = trim(str_replace("Test Date:", "", $value));
-        $date = InspectionHelper::validate_date($value, "M j, Y g:ia") ? (\DateTime::createFromFormat("M j, Y g:ia", $value))->format("Y-m-d") : date("Y-m-d");
+        $date = InspectionHelper::validate_date($value, "M j, Y g:ia") ? (\DateTime::createFromFormat("M j, Y g:ia", $value))->format("Y-m-d") : null;
         $parsed_records[0]["date"] = $date;
       } else if (strpos($value, "Result") != false) {
         $value = trim(str_replace("Result:", "", $value));
