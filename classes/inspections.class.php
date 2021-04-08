@@ -35,7 +35,7 @@ interface StateInspectionInterface
    * All return attributes are nullable, given that each state returns different information.
    *
    * @param string VIN number
-   * @return array Array<Array<?string type, ?string date, ?bool result>, ...>
+   * @return array Array<Array<?string type, ?string date, ?bool result, ?string url>, ...>
    * @throws TypeError
    * @throws UnsupportedStateOperationException
    * @author Alec M. <https://amattu.com>
