@@ -61,7 +61,7 @@ class Inspections {
     }
 
     // Fetch Records
-    return self::$states[$state]->fetch_records($VIN);
+    return self::$states[$state]->fetch_all($VIN);
   }
 
   /**
