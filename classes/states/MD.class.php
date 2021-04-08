@@ -60,12 +60,34 @@ class MD extends StateInspection implements StateInspectionInterface
     ) ?: "";
     $parsed_records = Array();
 
-    // Parse Results
-    $document->loadHTML($records);
-    echo $records;
+    // Validate Results
+    if (!$records || !$document->loadHTML($records)) {
+      return $parsed_records;
+    }
 
-    // temp
-    return [];
+    // Parse Results
+    $path = new \DomXPath($document);
+    $nodes = $path->query("//table[@class='results fullWidth']/tr");
+    foreach ($nodes as $node) {
+      // Variables
+      $value = $node->nodeValue;
+
+      // Checks
+      if (strpos($value, "Test Type") != false) {
+        $value = trim(str_replace("Test Type:", "", $value));
+        $parsed_records[0]["type"] = $value;
+      } else if (strpos($value, "Test Date") != false) {
+        $value = trim(str_replace("Test Date:", "", $value));
+        $date = InspectionHelper::validate_date($value, "M j, Y g:ia") ? (\DateTime::createFromFormat("M j, Y g:ia", $value))->format("Y-m-d") : date("Y-m-d");
+        $parsed_records[0]["date"] = $date;
+      } else if (strpos($value, "Result") != false) {
+        $value = trim(str_replace("Result:", "", $value));
+        $parsed_records[0]["result"] = $value == "Pass" ? true : false;
+      }
+    }
+
+    // Return
+    return $parsed_records;
   }
 }
 ?>
