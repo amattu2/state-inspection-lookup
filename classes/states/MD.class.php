@@ -71,6 +71,7 @@ class MD extends StateInspection implements StateInspectionInterface
     foreach ($nodes as $node) {
       // Variables
       $value = $node->nodeValue;
+      $parsed_records[0]["url"] = null;
 
       // Checks
       if (strpos($value, "Test Type") != false) {
