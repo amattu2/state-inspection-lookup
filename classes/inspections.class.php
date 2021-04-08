@@ -96,7 +96,7 @@ class Inspections {
    * @author Alec M. <https://amattu.com>
    * @date 2021-04-07T11:11:14-040
    */
-  private function setup_states()
+  private function setup_classes()
   {
     self::$states = Array(
       "MD" => new MD(),
@@ -119,7 +119,7 @@ class Inspections {
   {
     // Checks
     if (!self::$states) {
-      self::setup_states();
+      self::setup_classes();
     }
     if (!array_key_exists($state, self::$states)) {
       throw new UnsupportedStateException("The provided state is not currently supported");
@@ -148,7 +148,7 @@ class Inspections {
   {
     // Checks
     if (!self::$states) {
-      self::setup_states();
+      self::setup_classes();
     }
     if (!array_key_exists($state, self::$states)) {
       throw new UnsupportedStateException("The provided state is not currently supported");
@@ -177,7 +177,7 @@ class Inspections {
   {
     // Checks
     if (!self::$states) {
-      self::setup_states();
+      self::setup_classes();
     }
     if (!array_key_exists($state, self::$states)) {
       throw new UnsupportedStateException("The provided state is not currently supported");
