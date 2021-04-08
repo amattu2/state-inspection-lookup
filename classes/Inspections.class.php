@@ -200,5 +200,23 @@ class InspectionHelper
     curl_close($handle);
     return $result && !$error ? $result : "";
   }
+
+  /**
+   * Validate a string against a date format
+   *
+   * @param string date string
+   * @param string date format
+   * @return bool valid
+   * @throws TypeError
+   * @author Alec M. <https://amattu.com>
+   * @date 2021-04-08T09:55:55-040
+   */
+  public static function validate_date(string $date, string $format = 'Y-m-d') : bool {
+    // Variables
+    $d = \DateTime::createFromFormat($format, $date);
+
+    // Return
+    return $d && $d->format($format) === $date;
+  }
 }
 ?>
