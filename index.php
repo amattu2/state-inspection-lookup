@@ -1,6 +1,9 @@
 <?php
 // Files
-require("classes/inspections.class.php");
+require("classes/Inspections.class.php");
+require("classes/StateInspection.class.php");
+require("interfaces/StateInspection.interface.php");
+require("classes/states/MD.class.php");
 
 // Find Maryland inspections
 echo "<h1>Maryland Inspection Lookup</h1>", "<h2>Inspections</h2>", "<pre>";
