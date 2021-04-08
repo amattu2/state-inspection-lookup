@@ -68,12 +68,12 @@ class StateInspection
 
     // Fetch Safety Inspection
     try {
-      $result["Safety"] = $self->fetch_safety($VIN);
+      $result["Safety"] = $this->fetch_safety($VIN);
     } catch (\Exception $e) {}
 
     // Fetch Emissions Inspection
     try {
-      $result["Emissions"] = $self->fetch_emissions($VIN);
+      $result["Emissions"] = $this->fetch_emissions($VIN);
     } catch (\Exception $e) {}
 
     // Return
@@ -267,93 +267,6 @@ class InspectionHelper
     // Return
     curl_close($handle);
     return $result && !$error ? $result : "";
-  }
-}
-
-/**
- * Maryland State Inspection Wrapper
- *
- * @implements StateInspectionInterface
- */
-class MD extends StateInspection implements StateInspectionInterface
-{
-  // Class Variables
-  private $endpoints = Array(
-    "emissions" => "http://mva.mdveip.com/",
-    "safety" => "https://egov.maryland.gov/msp/vsi/api/Lookup/Inspections?vehicleVin=%s",
-  );
-
-  /**
-   * @see StateInspectionInterface::fetch_safety
-   */
-  public function fetch_safety(string $VIN) : array
-  {
-    // Fetch Records
-    $endpoint = sprintf($this->endpoints["safety"], $VIN);
-    $records = json_decode(InspectionHelper::http_get($endpoint), true) ?: [];
-    $parsed_records = Array();
-
-    // Parse Results
-    foreach ($records as $record) {
-      $parsed_records[] = Array(
-        "date" => $record["date"], /* TBD: Parse proprietary format */
-        "result" => $record["result"],
-        "link" => null
-      );
-    }
-
-    // Return
-    return $parsed_records;
-  }
-
-  /**
-   * @see StateInspectionInterface::fetch_emissions
-   * @see DOMDocument
-   */
-  public function fetch_emissions(string $VIN) : array
-  {
-    // Fetch Records
-    libxml_use_internal_errors(true);
-    $document = new \DOMDocument();
-    $records = InspectionHelper::http_post($this->endpoints["emissions"],
-      Array("vin" => $VIN)
-    ) ?: "";
-    $parsed_records = Array();
-
-    // Parse Results
-    $document->loadHTML($records);
-    echo $records;
-
-    // temp
-    return [];
-  }
-}
-
-/**
- * Virginia State Inspection Wrapper
- *
- * @implements StateInspectionInterface
- */
-class VA extends StateInspection implements StateInspectionInterface
-{
-  // Class Variables
-  private $endpoints = Array();
-
-  /**
-   * @see StateInspectionInterface::fetch_safety
-   */
-  public function fetch_safety(string $VIN) : array
-  {
-    throw new UnsupportedStateOperationException("This state does not support safety inspection results");
-  }
-
-  /**
-   * @see StateInspectionInterface::fetch_emissions
-   * @see DOMDocument
-   */
-  public function fetch_emissions(string $VIN) : array
-  {
-    throw new UnsupportedStateOperationException("This state does not support emissions results");
   }
 }
 ?>
