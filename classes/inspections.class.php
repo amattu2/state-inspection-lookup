@@ -20,17 +20,6 @@ class InvalidVINLengthException extends \Exception {}
 interface StateInspectionInterface
 {
   /**
-   * A endpoint wrapper to return emissions and inspection results
-   *
-   * @param string VIN number
-   * @return array Array<Array<Emissions>, Array<Safety>>
-   * @throws TypeError
-   * @author Alec M. <https://amattu.com>
-   * @date 2021-04-07T14:49:13-040
-   */
-  public function fetch_all(string $VIN) : array;
-
-  /**
    * A endpoint wrapper to return a structured state emissions test result
    * All return attributes are nullable, given that each state returns different information.
    *
@@ -56,6 +45,40 @@ interface StateInspectionInterface
    * @date 2021-04-07T11:05:27-040
    */
   public function fetch_safety(string $VIN) : array;
+}
+
+/**
+ * A state inspection class
+ */
+class StateInspection
+{
+  /**
+   * A endpoint wrapper to return emissions and inspection results
+   *
+   * @param string VIN number
+   * @return array Array<Array<Emissions>, Array<Safety>>
+   * @throws TypeError
+   * @author Alec M. <https://amattu.com>
+   * @date 2021-04-07T14:49:13-040
+   */
+  public function fetch_all(string $VIN) : array
+  {
+    // Variables
+    $result = Array("Safety" => [], "Emissions" => []);
+
+    // Fetch Safety Inspection
+    try {
+      $result["Safety"] = $self->fetch_safety($VIN);
+    } catch (\Exception $e) {}
+
+    // Fetch Emissions Inspection
+    try {
+      $result["Emissions"] = $self->fetch_emissions($VIN);
+    } catch (\Exception $e) {}
+
+    // Return
+    return $result;
+  }
 }
 
 /**
@@ -252,35 +275,13 @@ class InspectionHelper
  *
  * @implements StateInspectionInterface
  */
-class MD implements StateInspectionInterface
+class MD extends StateInspection implements StateInspectionInterface
 {
   // Class Variables
   private $endpoints = Array(
     "emissions" => "http://mva.mdveip.com/",
     "safety" => "https://egov.maryland.gov/msp/vsi/api/Lookup/Inspections?vehicleVin=%s",
   );
-
-  /**
-   * @see StateInspectionInterface::fetch_all
-   */
-  public function fetch_all(string $VIN) : array
-  {
-    // Variables
-    $result = Array("Safety" => null, "Emissions" => null);
-
-    // Fetch Safety Inspection
-    try {
-      $result["Safety"] = $this->fetch_safety($VIN);
-    } catch (\Exception $e) {}
-
-    // Fetch Emissions Inspection
-    try {
-      $result["Emissions"] = $this->fetch_emissions($VIN);
-    } catch (\Exception $e) {}
-
-    // Return
-    return $result;
-  }
 
   /**
    * @see StateInspectionInterface::fetch_safety
@@ -333,32 +334,10 @@ class MD implements StateInspectionInterface
  *
  * @implements StateInspectionInterface
  */
-class VA implements StateInspectionInterface
+class VA extends StateInspection implements StateInspectionInterface
 {
   // Class Variables
   private $endpoints = Array();
-
-  /**
-   * @see StateInspectionInterface::fetch_all
-   */
-  public function fetch_all(string $VIN) : array
-  {
-    // Variables
-    $result = Array("Safety" => null, "Emissions" => null);
-
-    // Fetch Safety Inspection
-    try {
-      $result["Safety"] = $this->fetch_safety($VIN);
-    } catch (\Exception $e) {}
-
-    // Fetch Emissions Inspection
-    try {
-      $result["Emissions"] = $this->fetch_emissions($VIN);
-    } catch (\Exception $e) {}
-
-    // Return
-    return $result;
-  }
 
   /**
    * @see StateInspectionInterface::fetch_safety
