@@ -20,6 +20,9 @@ class Inspections {
   // Class Variables
   private static $states = null;
   private static $vin_length = 17;
+  public CONST ISO_3166_2_supported_states = Array(
+    "MD"
+  );
 
   /**
    * Class State Initialization
@@ -39,7 +42,7 @@ class Inspections {
    * Fetch All State Inspection Records
    *
    * @param string VIN number
-   * @param string U.S. state
+   * @param string ISO_3166-2:US state abbreviation
    * @return array <See StateInspectionInterface>
    * @throws TypeError
    * @throws UnsupportedStateException
