@@ -22,29 +22,10 @@ class MD extends StateInspection implements StateInspectionInterface
     "emissions" => "http://mva.mdveip.com/",
     "safety" => "https://egov.maryland.gov/msp/vsi/api/Lookup/Inspections?vehicleVin=%s",
   );
-
-  /**
-   * @see StateInspectionInterface::fetch_safety
-   */
-  public function fetch_safety(string $VIN) : array
-  {
-    // Fetch Records
-    $endpoint = sprintf($this->endpoints["safety"], $VIN);
-    $records = json_decode(InspectionHelper::http_get($endpoint), true) ?: [];
-    $parsed_records = Array();
-
-    // Parse Results
-    foreach ($records as $record) {
-      $parsed_records[] = Array(
-        "date" => $record["date"], /* TBD: Parse proprietary format */
-        "result" => $record["result"],
-        "link" => null
-      );
-    }
-
-    // Return
-    return $parsed_records;
-  }
+  private $date_formats = Array(
+    "emissions" => "M j, Y g:ia",
+    "safety" => "Y-m-d+",
+  );
 
   /**
    * @see StateInspectionInterface::fetch_emissions
@@ -72,6 +53,7 @@ class MD extends StateInspection implements StateInspectionInterface
       // Variables
       $value = $node->nodeValue;
       $parsed_records[0]["url"] = null;
+      $parsed_records[0]["odometer"] = null;
 
       // Checks
       if (strpos($value, "Test Type") != false) {
@@ -79,12 +61,36 @@ class MD extends StateInspection implements StateInspectionInterface
         $parsed_records[0]["type"] = $value;
       } else if (strpos($value, "Test Date") != false) {
         $value = trim(str_replace("Test Date:", "", $value));
-        $date = InspectionHelper::validate_date($value, "M j, Y g:ia") ? (\DateTime::createFromFormat("M j, Y g:ia", $value))->format("Y-m-d") : null;
+        $date = InspectionHelper::validate_date($value, $this->date_formats["emissions"]) ? (\DateTime::createFromFormat($this->date_formats["emissions"], $value))->format("Y-m-d") : null;
         $parsed_records[0]["date"] = $date;
       } else if (strpos($value, "Result") != false) {
         $value = trim(str_replace("Result:", "", $value));
         $parsed_records[0]["result"] = $value == "Pass" ? true : false;
       }
+    }
+
+    // Return
+    return $parsed_records;
+  }
+
+  /**
+   * @see StateInspectionInterface::fetch_safety
+   */
+  public function fetch_safety(string $VIN) : array
+  {
+    // Fetch Records
+    $endpoint = sprintf($this->endpoints["safety"], $VIN);
+    $records = json_decode(InspectionHelper::http_get($endpoint), true) ?: [];
+    $parsed_records = Array();
+
+    // Parse Results
+    foreach ($records as $record) {
+      $parsed_records[] = Array(
+        "date" => (\DateTime::createFromFormat($this->date_formats["safety"], $record["certificationDate"]))->format("Y-m-d") ?: null,
+        "odometer" => $record["odometer"],
+        "result" => $record["inspectionResult"] == "pass" ? true : false,
+        "url" => null
+      );
     }
 
     // Return
