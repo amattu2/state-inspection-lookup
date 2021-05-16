@@ -19,7 +19,7 @@ interface StateInspectionInterface
    * All return attributes are nullable, given that each state returns different information.
    *
    * @param string VIN number
-   * @return array Array<Array<?string type, ?string date, ?bool result, ?string url>, ...>
+   * @return array Array<Array<?string type, ?string date, ?bool result, ?int odometer, ?string url>, ...>
    * @throws TypeError
    * @throws UnsupportedStateOperationException
    * @author Alec M. <https://amattu.com>
@@ -32,7 +32,7 @@ interface StateInspectionInterface
    * All return attributes are nullable, given that each state returns different information.
    *
    * @param string VIN number
-   * @return array Array<Array<?bool result, ?string date, ?string url>, ...>
+   * @return array Array<Array<?bool result, ?string date, ?int odometer, ?string url>, ...>
    * @return array Structured return result
    * @throws TypeError
    * @throws UnsupportedStateOperationException
