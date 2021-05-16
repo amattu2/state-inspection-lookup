@@ -47,13 +47,13 @@ class MD extends StateInspection implements StateInspectionInterface
     }
 
     // Parse Results
+    $parsed_records[0]["url"] = null;
+    $parsed_records[0]["odometer"] = null;
     $path = new \DomXPath($document);
     $nodes = $path->query("//table[@class='results fullWidth']/tr");
     foreach ($nodes as $node) {
       // Variables
       $value = $node->nodeValue;
-      $parsed_records[0]["url"] = null;
-      $parsed_records[0]["odometer"] = null;
 
       // Checks
       if (strpos($value, "Test Type") != false) {
